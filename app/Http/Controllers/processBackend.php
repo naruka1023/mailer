@@ -8,13 +8,32 @@ use Illuminate\Http\Request;
 class processBackend extends Controller
 {
 
+    function deleteProcess($id){
+        $processToDelete = Process::findOrFail($id);
+        $processToDelete->delete();
+        $allProcess = Process::all();
+        return $allProcess;
+    }
+    function updateStatus($id){
+        $process = Process::findOrFail($id);
+        if($process->status == 'INACTIVE'){
+            $process->status = 'ACTIVE';
+        }else{
+            $process->status = 'INACTIVE';
+        }
+        $process->save();
+        return $process;
+    }
     function saveProcess(Request $request){
         $process = new Process();
-        $pID = rand(1000, 1999);
-        $process->pID = $pID;
         $process->fileName = $request->file;
-        $process->basis = $request->frequency . '/' . $request->basis;
+        $process->basis = $request->basis;
         $process->status = 'INACTIVE';
+        $pID = rand(1000, 1999);
+        
+        sleep(1);
+
+        $process->pID = $pID;
         $process->save();
         return $process;
 

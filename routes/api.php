@@ -18,3 +18,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 Route::get('process', 'processBackend@getProcess');
 Route::post('process', 'processBackend@saveProcess');
+Route::delete('process/{id}', 'processBackend@deleteProcess');
+Route::put('process/{id}', 'processBackend@updateStatus');

@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class mail extends Model
+class mailCl extends Model
 {
     //
     protected $table = 'email';
