@@ -16,9 +16,17 @@ class mailToSend extends Mailable
      *
      * @return void
      */
-    public function __construct($data)
+    public $template;
+    protected $name;
+
+    public function __construct($template)
     {
-        $this->data = $data;
+        //
+        $this->template = $template['file'];
+        $this->name = $template['name'];
+        $this->template = str_replace('former student', $this->name, $this->template);
+        $this->template = str_replace(',', ',', $this->template);
+        $this->template = str_replace('!', "!", $this->template);
     }
 
     /**
@@ -28,6 +36,8 @@ class mailToSend extends Mailable
      */
     public function build()
     {
-        return $this->view('view.name');
+        return $this->markdown('emails.template')
+                    ->subject('Nevermind English Town here\'s Teacher Tony!!!')
+                    ->from('p.muangsaen@gmail.com');
     }
 }

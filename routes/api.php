@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('process', 'processBackend@getProcess');
-Route::post('process', 'processBackend@saveProcess');
-Route::delete('process/{id}', 'processBackend@deleteProcess');
-Route::put('process/{id}', 'processBackend@updateStatus');
+Route::post('mail', 'processBackend@sendMail');
+// Route::post('process', 'processBackend@saveProcess');
+// Route::delete('process/{id}', 'processBackend@deleteProcess');
+// Route::put('process/{id}', 'processBackend@updateStatus');

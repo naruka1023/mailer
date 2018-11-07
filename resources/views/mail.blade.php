@@ -33,123 +33,51 @@
             <div>
                 <h1>Automated Mailer</h1>
                 <form id='mailForm'>
-                    <p>Send emails every 
-                        <select id='basis' form="carform">
-                            <option value="day">day</option>
-                            <option value="day">week</option>
-                            <option value="month">month</option>
-                            <option value="year">year</option>
-                        </select>
+                    <p>
                         <div style='margin:auto; padding:30px 0px 10px 0px; display:inline-flex'>
                             <label style='padding-right:1em'>Template: </label><input type="file" name="fileToUpload" id="fileToUpload">
                         </div>
                     </p>
-                    <button type="button" id='submitButton' onclick='sendMail(fileToUpload)' class="btn btn-primary">SEND MAIL</button>
+                    <button type="button" id='submitButton' onclick='sendMail()' class="btn btn-primary">SEND MAIL</button>
                     <div id='waitMail' style='text-align:center; margin-top:3em; display:none'>
                         <i class="fa fa-circle-o-notch fa-spin" style="font-size:48px;color:blue"></i>
                     </div>
                 </form>
-                <div id='noProcess' style='margin-top:3em; display:none'>
-                    NO PROCESSES AVAILABLE
-                </div>
-                <div id='Process' style='margin-top:3em; display:none'>
-                    <table id="processTable">
-                        <tbody>
-                            <tr>
-                                <th>ID</th>
-                                <th>Status</th>
-                                <th>Template</th>
-                                <th>Basis</th>
-                                <th>Remove</th>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div id='wait' style='text-align:center; margin-top:3em'>
-                    <i class="fa fa-circle-o-notch fa-spin" style="font-size:48px;color:blue"></i>
-                </div>
             </div>
         </div>
     </div>
 <script>
-    $.get("api/process",function(data, status){
-        $('#wait').css('display', 'none');
-        if(data.length != 0){
-            $('#Process').css('display', 'block');
-            let color = 'success'
-            populateTable(data, false);
-        }else{
-            $('#noProcess').css('display', 'block');
-        }
-    });
-
-    function populateTable(data, emptyFlag){
-        var rows = $.map(data, function(value, index) {
-            let color = (value.status == 'INACTIVE')? 'danger' : 'success';
-            let statusParameter = value.pID;
-            let result = '<tr><td>' + value.pID + '</td>' +
-                    '<td><button id="status' + value.pID + '" type="button" onclick="updateStatus('+ statusParameter + ')" class="btn btn-' + color + '">'+ value.status +'</button></td>' +
-                    '<td>' + value.fileName + '</td>' +
-                    '<td>' + value.basis + '</td>' +
-                    '<td><button onclick="deleteProcess('+ statusParameter + ')"><i style="font-size:2em; color:red" class="fa fa-window-close" aria-hidden="true"></i></button></td>' +
-                    '</tr>';
-            return result;
-        });
-        if(emptyFlag){
-            $('#processTable >tbody').empty();
-        }
-        $('#processTable > tbody').append(rows.join(''));
-    }
-    function deleteProcess(pID){
-        $('#waitMail').css('display', 'block');
-        $.ajax({
-            url: "api/process/" + pID,
-            type: 'DELETE',
-            success: function(response) {
-                $('#waitMail').css('display', 'none');
-                populateTable(response, true);
-            }
-        });
-    }
-    function updateStatus(pID){
-        $('#waitMail').css('display', 'block');
-        $.ajax({
-            url: "api/process/" + pID,
-            type: 'PUT',
-            success: function(response) {
-                $('#waitMail').css('display', 'none');
-                let color = (response.status == 'INACTIVE')? 'danger' : 'success';
-                $('#status' + response.pID).removeClass();
-                $('#status' + response.pID).addClass("btn btn-" + color + "");
-                $('#status' + response.pID).html(response.status);
-            }
-        });
-    }
+  
     function sendMail(fileToUpload){
         $('#waitMail').css('display', 'unset');
         $('#submitButton').css('display', 'none');
-        let file = fileToUpload.value.split("\\");
-        let url = 'http://127.0.0.1:8000';
-        let basis = $('#basis').val();
-        file = file[file.length-1];
-        $.post("api/process",
-        {
-            file: file,
-            basis: basis
-        },
-        function(data, status){
-            let color = (data.status == 'INACTIVE')? 'danger' : 'primary';
+        let file = $('#fileToUpload').prop('files')[0];
+        if(file != null){
+            if(file.name.indexOf('.txt') != -1){
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    let result = event.target.result;
+                    $.post("api/mail",
+                    {
+                        file: result,
+                    },
+                    function(data, status){
+                        $('#submitButton').css('display', 'unset');
+                        $('#waitMail').css('display', 'none');
+                        alert('all ' + data.success +' emails sent!');
+                    });  
+                };
+                reader.readAsText(file);
+            }else{
+                $('#submitButton').css('display', 'unset');
+                $('#waitMail').css('display', 'none');
+                alert('wrong file type! please choose a .txt file!');
+            }
+        }else{
             $('#submitButton').css('display', 'unset');
             $('#waitMail').css('display', 'none');
-            // let newRow = '<tr><td>' + data.pID + '</td>' +
-            //              '<td><button type="button" class="btn btn-' + color + '">'+ data.status +'</button></td>' +
-            //              '<td>' + data.fileName + '</td>' +
-            //              '<td>' + data.basis + '</td>' +
-            //              '</tr>';
-            // $('#processTable > tbody').append(newRow);
-            alert('New Automated Mailer process has been added!');
-            location.reload()
-        });  
+            alert('no file is chosen!');
+        }
     }
 </script>
 </body>

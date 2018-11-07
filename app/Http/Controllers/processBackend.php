@@ -2,44 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Process;
+use App\Mail\mailToSend;
+use App\mailCl;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 
 class processBackend extends Controller
 {
-
-    function deleteProcess($id){
-        $processToDelete = Process::findOrFail($id);
-        $processToDelete->delete();
-        $allProcess = Process::all();
-        return $allProcess;
-    }
-    function updateStatus($id){
-        $process = Process::findOrFail($id);
-        if($process->status == 'INACTIVE'){
-            $process->status = 'ACTIVE';
-        }else{
-            $process->status = 'INACTIVE';
+    function sendMail(Request $request){
+        $mailList = MailCl::all();
+        $mail = $mailList[0];
+        // $payload = array('file' => $request->file, 'name' =>'Pan Muangsaen');
+        foreach($mailList as $mail){
+            $payload = array('file' => $request->file, 'name' => $mail->name);
+            Mail::to($mail->email)->send(new mailToSend($payload));
         }
-        $process->save();
-        return $process;
-    }
-    function saveProcess(Request $request){
-        $process = new Process();
-        $process->fileName = $request->file;
-        $process->basis = $request->basis;
-        $process->status = 'INACTIVE';
-        $pID = rand(1000, 1999);
         
-        sleep(1);
-
-        $process->pID = $pID;
-        $process->save();
-        return $process;
-
-    }
-    function getProcess(Request $request){
-        $processList = Process::all();
-        return $processList;
+        // Mail::to('naruka1023@yahoo.com')->send(new mailToSend($payload));
+        return array('success' => count($mailList));
     }
 }
