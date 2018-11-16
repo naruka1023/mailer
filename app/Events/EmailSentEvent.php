@@ -8,9 +8,9 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class EmailSentEvent
+class EmailSentEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -19,11 +19,14 @@ class EmailSentEvent
      *
      * @return void
      */
-    public function __construct()
+    public $totalMail = '';
+    public $index = '';
+    public function __construct($totalMail, $index)
     {
-        //
+        $this->index = $index;
+        $this->totalMail = $totalMail;
     }
-
+    
     /**
      * Get the channels the event should broadcast on.
      *
@@ -31,6 +34,13 @@ class EmailSentEvent
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return new Channel('test-event');
+    }
+    public function broadcastWith()
+    {
+        return [
+            'index' => $this->index,
+            'totalMail' => $this->totalMail
+        ];
     }
 }
