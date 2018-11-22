@@ -2,7 +2,9 @@
     <IfModule mod_negotiation.c>
         Options -MultiViews
     </IfModule>
-
+    <IfModule dir_module>
+        DirectoryIndex index.html index.php
+    </IfModule>
     RewriteEngine On
 
     # Redirect Trailing Slashes If Not A Folder...
