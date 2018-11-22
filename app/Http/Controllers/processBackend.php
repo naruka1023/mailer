@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 class processBackend extends Controller
 {
     function sendMail(Request $request){
+        ini_set('max_execution_time', 300000);
         $mailList = MailCl::all();
         $mail = $mailList[0];
         $index = 1;
