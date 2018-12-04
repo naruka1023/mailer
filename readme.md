@@ -24,5 +24,3 @@ I used Redis and socket IO to implement a loading bar that shows how many emails
 
 a link to a demonstration of the app can be found here <br><br>
 https://www.youtube.com/watch?v=qE51tocJTzU
-
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
