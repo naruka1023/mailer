@@ -9,6 +9,6 @@ A few months back, I have a friend-worked as a remote english teacher-who lament
 I used Redis and socket IO to implement a loading bar that shows how many emails have been sent. <br><br>
 
 a link to a demonstration of the app can be found here <br><br>
-https://www.youtube.com/watch?v=qE51tocJTzU&feature=share
+https://www.youtube.com/watch?v=qE51tocJTzU
 
 The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
